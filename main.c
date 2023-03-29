@@ -1,108 +1,44 @@
-#ifndef MAIN_H
-#define MAIN_H
-#include <stdarg.h>
+#include <limits.h>
 #include <stdio.h>
-#include <unistd.h>
-
-#define UNUSED(x) (void)(x)
-#define BUFF_SIZE 1024
-
-/* FLAGS */
-#define F_MINUS 1
-#define F_PLUS 2
-#define F_ZERO 4
-#define F_HASH 8
-#define F_SPACE 16
-
-/* SIZES */
-#define S_LONG 2
-#define S_SHORT 1
+#include "main.h"
 
 /**
- * struct fmt - Struct op
+ * main - Entry point
  *
- * @fmt: The format.
- * @fn: The function associated.
+ * Return: Always 0
  */
-struct fmt
+int main(void)
 {
-	char fmt;
-	int (*fn)(va_list, char[], int, int, int, int);
-};
-/**
- * typedef struct fmt fmt_t - Struct op
- *
- * @fmt: The format.
- * @fm_t: The function associated.
- */
-typedef struct fmt fmt_t;
+    int len;
+    int len2;
+    unsigned int ui;
+    void *addr;
 
-int _printf(const char *format, ...);
-int handle_print(const char *fmt, int *i,
-va_list list, char buffer[], int flags, int width, int precision, int size);
-
-/****************** FUNCTIONS ******************/
-
-/* Funtions to print chars and strings */
-int print_char(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_string(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_percent(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-
-/* Functions to print numbers */
-int print_int(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_binary(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_unsigned(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_octal(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_hexadecimal(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_hexa_upper(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
- * @fmt: Formatted string in which to print the arguments.
- * @list: List of arguments to be printed.
- * @ind: ind.
- * @buffer: Buffer array to handle print.
- * @flags: Calculates active flags
- * @width: get width.
- * @precision: Precision specification
- * @size: Size specifier
- * Return: 1 or 2;
- */
-int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
-	int flags, int width, int precision, int size)
-{
-	int i, unknow_len = 0, printed_chars = -1;
-	fmt_t fmt_types[] = {
-		{'c', print_char}, {'s', print_string}, {'%', print_percent},
-		{'i', print_int}, {'d', print_int}, {'b', print_binary},
-		{'u', print_unsigned}, {'o', print_octal}, {'x', print_hexadecimal},
-		{'X', print_hexa_upper}, {'p', print_pointer}, {'S', print_non_printable},
-		{'r', print_reverse}, {'R', print_rot13string}, {'\0', NULL}
-	};
-	for (i = 0; fmt_types[i].fmt != '\0'; i++)
-		if (fmt[*ind] == fmt_types[i].fmt)
-			return (fmt_types[i].fn(list, buffer, flags, width, precision, size));
-
-	if (fmt_types[i].fmt == '\0')
-	{
-		if (fmt[*ind] == '\0')
-			return (-1);
-		unknow_len += write(1, "%%", 1);
-		if (fmt[*ind - 1] == ' ')
-			unknow_len += write(1, " ", 1);
-		else if (width)
-		{
-			--(*ind);
-			while (fmt[*ind] != ' ' && fmt[*ind] != '%')
-				--(*ind);
-	return (printed_chars);
+    len = _printf("Let's try to printf a simple sentence.\n");
+    len2 = printf("Let's try to printf a simple sentence.\n");
+    ui = (unsigned int)INT_MAX + 1024;
+    addr = (void *)0x7ffe637541f0;
+    _printf("Length:[%d, %i]\n", len, len);
+    printf("Length:[%d, %i]\n", len2, len2);
+    _printf("Negative:[%d]\n", -762534);
+    printf("Negative:[%d]\n", -762534);
+    _printf("Unsigned:[%u]\n", ui);
+    printf("Unsigned:[%u]\n", ui);
+    _printf("Unsigned octal:[%o]\n", ui);
+    printf("Unsigned octal:[%o]\n", ui);
+    _printf("Unsigned hexadecimal:[%x, %X]\n", ui, ui);
+    printf("Unsigned hexadecimal:[%x, %X]\n", ui, ui);
+    _printf("Character:[%c]\n", 'H');
+    printf("Character:[%c]\n", 'H');
+    _printf("String:[%s]\n", "I am a string !");
+    printf("String:[%s]\n", "I am a string !");
+    _printf("Address:[%p]\n", addr);
+    printf("Address:[%p]\n", addr);
+    len = _printf("Percent:[%%]\n");
+    len2 = printf("Percent:[%%]\n");
+    _printf("Len:[%d]\n", len);
+    printf("Len:[%d]\n", len2);
+    _printf("Unknown:[%r]\n");
+    printf("Unknown:[%r]\n");
+    return (0);
 }
-}
-}
-
